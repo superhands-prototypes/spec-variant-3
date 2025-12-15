@@ -1,6 +1,6 @@
 import Header from './components/Header'
 import SignupForm from './components/SignupForm'
-import Footer from './components/Footer'
+import RecentlySoldTractors from './components/RecentlySoldTractors'
 import './App.css'
 
 function App() {
@@ -8,9 +8,11 @@ function App() {
     <>
       <Header />
       <main>
-        <SignupForm />
+        <RecentlySoldTractors />
+        <div className="signup-layout">
+          <SignupForm />
+        </div>
       </main>
-      <Footer />
     </>
   )
 }

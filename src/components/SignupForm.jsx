@@ -230,16 +230,15 @@ const countries = [
   index === self.findIndex(c => c.code === country.code)
 ).sort((a, b) => a.name.localeCompare(b.name));
 
-const RegisterIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 40 40" width="40" height="40">
-    <circle cx="20" cy="20" r="20" fill="#2E44ED"></circle>
-    <path stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m24 26 3-3m0 0 3 3m-3-3v6m-7-5.5h-4.5c-1.396 0-2.093 0-2.661.172a4 4 0 0 0-2.667 2.667C10 26.907 10 27.604 10 29m12.5-13.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0"></path>
-  </svg>
-);
-
 const ChevronDown = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 8" width="12" height="8">
     <path fill="#5f6e95" d="m6 7.375-6-6L1.075.3 6 5.25 10.925.325 12 1.4z"></path>
+  </svg>
+);
+
+const ChevronRight = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 8 12" width="8" height="12">
+    <path fill="currentColor" d="m1.4 0-1.075 1.075L5.25 6 .325 10.925 1.4 12l6-6z"></path>
   </svg>
 );
 
@@ -271,7 +270,9 @@ const CountryFlag = ({ flag }) => (
   <span style={{ fontSize: '18px', lineHeight: '1' }}>{flag}</span>
 );
 
-function TextInput({ label, type = 'text', placeholder, required, value, onChange, name }) {
+function TextInput({ label, type = 'text', placeholder, required, value, onChange, name, error, onBlur, isValid }) {
+  const isCompleted = value && value.trim() !== '' && !error;
+  
   return (
     <div className="text-input">
       {label && <label>{label}</label>}
@@ -283,8 +284,18 @@ function TextInput({ label, type = 'text', placeholder, required, value, onChang
           value={value}
           onChange={onChange}
           name={name}
+          onBlur={onBlur}
+          className={`${error ? 'input-error' : ''} ${isCompleted ? 'input-completed' : ''}`}
         />
+        {isCompleted && (
+          <span className="input-checkmark">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+        )}
       </div>
+      {error && <span className="error-message">{error}</span>}
     </div>
   );
 }
@@ -393,8 +404,7 @@ function Checkbox({ checked, onChange, children }) {
 
 export default function SignupForm() {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    fullName: '',
     phone: '',
     email: '',
     password: '',
@@ -402,57 +412,117 @@ export default function SignupForm() {
   const [countryCode, setCountryCode] = useState('GB');
   const [whatsapp, setWhatsapp] = useState(false);
   const [sms, setSms] = useState(true);
-  const [agreed, setAgreed] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
-  const isFormValid = formData.firstName && formData.lastName && formData.phone && formData.email && formData.password && agreed;
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.fullName || formData.fullName.trim() === '') {
+      newErrors.fullName = 'Full name is required';
+    }
+    
+    if (!formData.phone || formData.phone.trim() === '') {
+      newErrors.phone = 'Mobile phone is required';
+    }
+    
+    if (!formData.email || formData.email.trim() === '') {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.password || formData.password.trim() === '') {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+    }
+    
+    setErrors(newErrors);
+    // Mark all fields as touched to show errors
+    setTouched({
+      fullName: true,
+      phone: true,
+      email: true,
+      password: true
+    });
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const isFormValid = formData.fullName && formData.phone && formData.email && formData.password;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isFormValid) {
+    if (validateForm()) {
       console.log('Form submitted:', formData);
     }
+  };
+
+  const handleBlur = (name) => {
+    setTouched(prev => ({ ...prev, [name]: true }));
+    // Validate individual field on blur
+    if (!formData[name] || formData[name].trim() === '') {
+      setErrors(prev => ({ ...prev, [name]: `${name === 'fullName' ? 'Full name' : name === 'phone' ? 'Mobile phone' : name.charAt(0).toUpperCase() + name.slice(1)} is required` }));
+    } else if (name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }));
+    } else if (name === 'password' && formData.password.length < 8) {
+      setErrors(prev => ({ ...prev, password: 'Password must be at least 8 characters' }));
+    } else {
+      // Clear error if field is valid
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const isFieldValid = (name) => {
+    const value = formData[name];
+    if (!value || value.trim() === '') return false;
+    if (name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return false;
+    if (name === 'password' && value.length < 8) return false;
+    return !errors[name];
   };
 
   return (
     <div className="signup-screen screen">
       <div className="auth-layout">
         <div className="auth-header">
-          <RegisterIcon />
           <h2>Buy machinery at dealer-only prices</h2>
           <p className="auth-description">Enter your details to access our stock today</p>
         </div>
 
         <div className="auth-content">
           <form className="signup-form" onSubmit={handleSubmit}>
-            <div className="form-row">
-              <TextInput
-                label="First name"
-                placeholder="First name"
-                required
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-              />
-              <TextInput
-                label="Last name"
-                placeholder="Last name"
-                required
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-              />
-            </div>
+            <TextInput
+              label="Full name"
+              placeholder="Full name"
+              required
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
+              error={errors.fullName}
+              onBlur={() => handleBlur('fullName')}
+            />
 
             <PhoneInput
               value={formData.phone}
-              onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, phone: e.target.value }));
+                if (errors.phone) {
+                  setErrors(prev => ({ ...prev, phone: '' }));
+                }
+              }}
               countryCode={countryCode}
               onCountryChange={setCountryCode}
+              error={errors.phone}
+              onBlur={() => handleBlur('phone')}
             />
 
             <TextInput
@@ -463,20 +533,28 @@ export default function SignupForm() {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
+              error={errors.email}
+              onBlur={() => handleBlur('email')}
             />
 
             <TextInput
-              label="Password"
+              label={
+                <>
+                  Password <span className="label-regular">(Min 8 Characters)</span>
+                </>
+              }
               type="password"
               placeholder="Password"
               required
               name="password"
               value={formData.password}
               onChange={handleInputChange}
+              error={errors.password}
+              onBlur={() => handleBlur('password')}
             />
 
             <div className="notifications-section">
-              <h3 className="notifications-title">Additional notifications about new sales</h3>
+              <h3 className="notifications-title">Notifications about new sales</h3>
               <div className="notifications-switches">
                 <Switch
                   label="WhatsApp"
@@ -497,12 +575,14 @@ export default function SignupForm() {
               </div>
             </div>
 
-            <div className="checkbox-section">
-              <Checkbox
-                checked={agreed}
-                onChange={() => setAgreed(!agreed)}
-              >
-                I agree to the{' '}
+            <button type="submit" className="button primary" disabled={!isFormValid}>
+              Get Started
+              <ChevronRight />
+            </button>
+
+            <div className="terms-section">
+              <p className="terms-text">
+                By clicking Get Started you agree to the{' '}
                 <a href="/terms-conditions" target="_blank" className="link">
                   Terms & conditions
                 </a>{' '}
@@ -510,18 +590,10 @@ export default function SignupForm() {
                 <a href="/privacy-policy" target="_blank" className="link">
                   Privacy policy
                 </a>.
-              </Checkbox>
+              </p>
             </div>
-
-            <button type="submit" className="button primary" disabled={!isFormValid}>
-              Get Started
-            </button>
           </form>
         </div>
-
-        <p className="auth-link">
-          Already have an account?&nbsp;<a href="/login">Login</a>
-        </p>
       </div>
     </div>
   );

@@ -40,20 +40,9 @@ export default function Header() {
           <a className="header-logo" href="/">
             <SpectingaLogo />
           </a>
-          <nav className="header-nav">
-            <ul className="nav-list">
-              <li className="nav-item">
-                <a href="#how-it-works">How it works</a>
-              </li>
-              <li className="nav-item">
-                <a href="/">Marketplace</a>
-              </li>
-            </ul>
-          </nav>
         </div>
         <div className="header-actions">
-          <a href="/login" className="login-link">Login</a>
-          <a href="/listings/create" className="button primary">Sell machinery</a>
+          <a href="/login" className="button secondary">Login</a>
           <div className="locale-selector">
             <GBFlag />
           </div>
