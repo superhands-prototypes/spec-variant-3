@@ -32,7 +32,7 @@ const GBFlag = () => (
   </svg>
 );
 
-export default function Header() {
+export default function Header({ onSellMachineryClick, onLoginClick }) {
   return (
     <header className="header">
       <div className="header-wrapper">
@@ -40,9 +40,24 @@ export default function Header() {
           <a className="header-logo" href="/">
             <SpectingaLogo />
           </a>
+          <nav className="header-nav">
+            <a href="#how-it-works" className="header-nav-link">How it works</a>
+            <a href="#marketplace" className="header-nav-link">Marketplace</a>
+          </nav>
         </div>
         <div className="header-actions">
-          <a href="/login" className="button secondary">Login</a>
+          <button 
+            className="button secondary" 
+            onClick={onLoginClick}
+          >
+            Login
+          </button>
+          <button 
+            className="button sell-machinery-button" 
+            onClick={onSellMachineryClick}
+          >
+            Sell machinery
+          </button>
           <div className="locale-selector">
             <GBFlag />
           </div>

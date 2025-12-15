@@ -32,6 +32,25 @@
 .header-left {
   display: flex;
   align-items: center;
+  gap: 2rem;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.header-nav-link:hover {
+  opacity: 0.8;
 }
 
 .header-actions {
@@ -49,11 +68,16 @@
   font-size: 14px;
   font-weight: 600;
   border-radius: 0;
+  line-height: 1;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
 }
 
 .header-actions .button.secondary:hover {
   background-color: white;
   color: var(--primary-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .locale-selector {
@@ -70,4 +94,31 @@
   overflow: hidden;
 }
 
+.sell-machinery-button {
+  background-color: rgb(102, 240, 208);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgb(102, 240, 208);
+  padding: 13px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.sell-machinery-button:hover {
+  background-color: rgb(82, 220, 188);
+  border-color: rgb(82, 220, 188);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .header-nav {
+    display: none;
+  }
+}
 
