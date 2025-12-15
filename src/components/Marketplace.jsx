@@ -1177,7 +1177,10 @@ export default function Marketplace({ onBecomeDealerClick }) {
 
       {/* Scroll Modal */}
       {showScrollModal && (
-        <div className="scroll-modal-overlay" onClick={() => setShowScrollModal(false)}>
+        <div className="scroll-modal-overlay" onClick={() => {
+          setShowScrollModal(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}>
           <div className="scroll-modal" onClick={(e) => e.stopPropagation()}>
             <button 
               className="scroll-modal-close"
@@ -1196,14 +1199,14 @@ export default function Marketplace({ onBecomeDealerClick }) {
                 onClick={onBecomeDealerClick}
               >
                 <GoogleIcon />
-                Sign in with Google
+                Sign up with Google
               </button>
               <div className="scroll-modal-divider">
                 <span className="scroll-modal-divider-line"></span>
                 <span className="scroll-modal-divider-text">or</span>
                 <span className="scroll-modal-divider-line"></span>
               </div>
-              <div className="scroll-modal-email-wrapper">
+              <div className="scroll-modal-email-row">
                 <input
                   type="email"
                   placeholder="Enter your email"
@@ -1211,14 +1214,13 @@ export default function Marketplace({ onBecomeDealerClick }) {
                   onChange={(e) => setEmail(e.target.value)}
                   className="scroll-modal-email-input"
                 />
+                <button 
+                  className="scroll-modal-button email-button"
+                  onClick={onBecomeDealerClick}
+                >
+                  <ArrowRight className="scroll-modal-button-arrow" />
+                </button>
               </div>
-              <button 
-                className="scroll-modal-button email-button"
-                onClick={onBecomeDealerClick}
-              >
-                Continue with email
-                <ArrowRight className="scroll-modal-button-arrow" />
-              </button>
             </div>
           </div>
         </div>
