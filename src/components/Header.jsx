@@ -41,8 +41,7 @@ export default function Header({ onSellMachineryClick, onLoginClick }) {
             <SpectingaLogo />
           </a>
           <nav className="header-nav">
-            <a href="#how-it-works" className="header-nav-link">How it works</a>
-            <a href="#marketplace" className="header-nav-link">Marketplace</a>
+            <a href="#explore" className="header-nav-link">Explore</a>
           </nav>
         </div>
         <div className="header-actions">

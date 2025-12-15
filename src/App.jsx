@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Header from './components/Header'
-import Hero from './components/Hero'
-import Benefits from './components/Benefits'
+import Marketplace from './components/Marketplace'
+import Footer from './components/Footer'
 import Modal from './components/Modal'
 import ChatWidget from './components/ChatWidget'
 import './App.css'
@@ -30,9 +30,9 @@ function App() {
         onLoginClick={() => handleOpenModal('login')}
       />
       <main>
-        <Hero onBecomeBuyerClick={() => handleOpenModal('signup')} />
-        <Benefits />
+        <Marketplace onBecomeDealerClick={() => handleOpenModal('signup')} />
       </main>
+      <Footer />
       <ChatWidget />
       <Modal 
         isOpen={isModalOpen} 
