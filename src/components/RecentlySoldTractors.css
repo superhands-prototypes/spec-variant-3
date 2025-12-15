@@ -114,9 +114,16 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
+}
+
+.tractor-location-time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .tractor-location {
@@ -133,7 +140,7 @@
 
 .tractor-bullet {
   color: var(--text-secondary);
-  margin: 0 0.0625rem;
+  margin: 0;
 }
 
 .tractor-time {

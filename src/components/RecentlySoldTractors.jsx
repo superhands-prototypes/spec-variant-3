@@ -87,12 +87,14 @@ export default function RecentlySoldTractors() {
                 <div className="tractor-info">
                   <h3 className="tractor-model">{tractor.model}</h3>
                   <div className="tractor-details">
-                    <span className="tractor-location">
-                      <LocationPinIcon />
-                      {tractor.location}
-                    </span>
-                    <span className="tractor-bullet">•</span>
-                    <span className="tractor-time">{tractor.timeAgo}</span>
+                    <div className="tractor-location-time">
+                      <span className="tractor-location">
+                        <LocationPinIcon />
+                        {tractor.location}
+                      </span>
+                      <span className="tractor-bullet">•</span>
+                      <span className="tractor-time">{tractor.timeAgo}</span>
+                    </div>
                     <div className="tractor-price-placeholder">
                       <span className="price-symbol">£</span>
                       <span className="price-block"></span>
